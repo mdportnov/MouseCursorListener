@@ -7,11 +7,14 @@ import tornadofx.*
 class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
-        val labelColor = c("#a94442")
     }
 
     init {
+        reloadStylesheetsOnFocus()
+        importStylesheet(" file:///C:\\Users\\Mi\\IdeaProjects\\mouseListenerApp\\src\\main\\kotlin\\com\\example\\demo\\resources\\main.css")
+
         root{
+
             label {
                 padding = box(10.px)
                 backgroundColor += Color.WHITESMOKE

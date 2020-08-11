@@ -1,0 +1,34 @@
+.root {
+    -fx-background-color:black;
+}
+
+.text {
+    -fx-font-family: "Roboto Condensed";
+    -fx-font-size: 20;
+}
+
+.button {
+    -fx-background-radius:0;
+    -fx-border-color:transparent;
+    -fx-border-width: 0 3 3 0;
+}
+
+#b1{
+    -fx-background-color: #5db03b;
+    -fx-border-color: #e03a3a
+}
+#b2{
+    -fx-background-color: #e03a3a;
+    -fx-border-color: #5db03b
+}
+
+.button:hover {
+    -fx-background-color:lime;
+    -fx-background-radius:0;
+    -fx-border-color:black;
+    -fx-border-width: 0 3 3 0;
+}
+
+.button:hover .text{
+    -fx-fill: black;
+}

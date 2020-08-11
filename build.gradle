@@ -32,7 +32,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    compile "no.tornado:tornadofx:$tornadofx_version"
+    implementation "no.tornado:tornadofx:$tornadofx_version"
 
     compile group: 'io.reactivex.rxjava2', name: 'rxjavafx', version: '2.1.0'
     compile 'com.github.thomasnield:rxkotlinfx:2.2.2'
