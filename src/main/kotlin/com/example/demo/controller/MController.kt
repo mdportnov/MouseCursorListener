@@ -1,4 +1,4 @@
-package com.example.demo.Controller
+package com.example.demo.controller
 
 import com.example.demo.model.Point
 import com.example.demo.view.MainView
@@ -7,19 +7,19 @@ import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
-import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.canvas.GraphicsContext
-import javafx.scene.control.MultipleSelectionModel
 import javafx.scene.paint.Color
 import javafx.util.Duration
 import tornadofx.*
 import java.awt.MouseInfo
 import java.io.File
 import java.io.FileReader
+import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
@@ -27,12 +27,9 @@ import kotlin.math.round
 import kotlin.math.sqrt
 
 
-@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class MController : Controller() {
-    fun main(){
-
-    }
-    val mainView: MainView by inject()
+    private val mainView: MainView by inject()
 
     var pathArrayToDraw = mutableListOf<Point>()
 
@@ -48,9 +45,8 @@ class MController : Controller() {
 
     var filesList: ObservableList<String> = File(getDataPath(false)).list().toList().observable()
 
-
-    fun updateFiles(){
-        mainView.lv.items=File(getDataPath(false)).list().toList().observable()
+    fun updateFiles() {
+        mainView.lv.items = File(getDataPath(false)).list().toList().observable()
     }
 
     fun executeValues() {
@@ -71,15 +67,15 @@ class MController : Controller() {
                     continue
                 }
 
-                movementX = abs(x - prevX);
-                movementY = abs(y - prevY);
+                movementX = abs(x - prevX)
+                movementY = abs(y - prevY)
                 movement = sqrt(movementX * movementX + movementY * movementY)
 
-                TimeUnit.MILLISECONDS.sleep(1)
+                TimeUnit.NANOSECONDS.sleep(100)
 
                 print("\n $x $y")
 
-                currentPath.add(Point(x - 250.0, y))
+                currentPath.add(Point(x, y))
 
                 prevX = x
                 prevY = y
@@ -93,7 +89,7 @@ class MController : Controller() {
             }
             File("${getDataPath(false)}\\data${getNumberOfFiles() + 1}.txt")
                     .writeText(Gson().toJson(currentPath))
-            ui{
+            ui {
                 updateFiles()
             }
         }
@@ -107,28 +103,17 @@ class MController : Controller() {
             val fileReader = FileReader(file)
             pathArrayToDraw = gson.fromJson(JsonReader(fileReader), arrayType)
             fileReader.close()
-        }ui{
+        } ui {
             val gc: GraphicsContext = mainView.cv.graphicsContext2D
-
             gc.fill = Color.FLORALWHITE
             gc.fillRect(0.0, 0.0, mainView.cv.width, mainView.cv.height)
-            gc.lineWidth = 1.0
             gc.fill = Color.BLACK
-
-//                        for(point in mController.pathArrayToDraw){
-//                            runAsync{
-//                                TimeUnit.NANOSECONDS.sleep(10000)
-//                            } ui{
-//                                gc.strokeOval(point.x, point.y, 1.0, 1.0)
-//                                gc.stroke()
-//                            }
-//                    }
 
             var i = 0
 
-            val drawPixel = Timeline(KeyFrame(Duration.millis(2.0), EventHandler<ActionEvent?> {
+            val drawPixel = Timeline(KeyFrame(Duration.millis(1.0), EventHandler<ActionEvent?> {
                 val point = pathArrayToDraw[i]
-                gc.strokeOval(point.x, point.y, 1.0, 1.0)
+                gc.strokeOval(point.x - 250.0, point.y - 30.0, 0.5, 0.5)
                 i++
             }))
             drawPixel.cycleCount = pathArrayToDraw.size
@@ -149,7 +134,11 @@ class MController : Controller() {
     fun getDataPath(isSrc: Boolean): String {
         return if (isSrc)
             "file:///${Paths.get("").toAbsolutePath()}"
-        else
-            "${Paths.get("").toAbsolutePath()}\\Data"
+        else{
+            val file = File("${Paths.get("").toAbsolutePath()}\\Data").mkdir()
+
+            return "${Paths.get("").toAbsolutePath()}\\Data"
+
+        }
     }
 }

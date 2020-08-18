@@ -22,11 +22,10 @@
     -fx-border-color: #5db03b
 }
 
-.button:hover {
-    -fx-background-color:lime;
+#b2:hover, #b1:hover, .button:hover {
+    -fx-background-color:gray;
     -fx-background-radius:0;
     -fx-border-color:black;
-    -fx-border-width: 0 3 3 0;
 }
 
 .button:hover .text{

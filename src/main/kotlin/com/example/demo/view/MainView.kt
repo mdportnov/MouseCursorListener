@@ -1,6 +1,7 @@
 package com.example.demo.view
 
-import com.example.demo.Controller.MController
+import com.example.demo.controller.MController
+import com.github.thomasnield.rxkotlinfx.events
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.canvas.Canvas
@@ -8,22 +9,27 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.ListView
 import javafx.scene.control.MultipleSelectionModel
 import javafx.scene.control.SelectionMode
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Priority
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import tornadofx.*
+import java.io.File
+import java.nio.file.Paths
 
 
 class MainView : View() {
     private val mController: MController by inject()
     var cv = Canvas()
-
     lateinit var v1: VBox
     var lv: ListView<String> = ListView()
     lateinit var selModel: MultipleSelectionModel<String>
 
     override val root = hbox {
+        events(MouseEvent.MOUSE_MOVED)
+                .map { "X: ${it.x} Y: ${it.y}" }
+                .subscribe { mController.labelCoords.set(it) }
         v1 = vbox {
             spacing = 10.0
             minWidth = 250.0
@@ -117,17 +123,11 @@ class MainView : View() {
                     style {
                         height = primaryStage.height - v1.height
                         width = primaryStage.width - v1.width
-                        borderColor += box(
-                                top = Color.RED,
-                                right = Color.DARKGREEN,
-                                left = Color.ORANGE,
-                                bottom = Color.PURPLE
-                        )
                     }
                 }
                 stackpane {
-                    minHeight = primaryStage.height - v1.height
-                    minWidth = primaryStage.width - 257.0
+                    minHeight = primaryStage.height + 9.0
+                    minWidth = primaryStage.width - 250.0
                     style {
                         borderColor += box(
                                 top = Color.BLACK,
@@ -140,10 +140,12 @@ class MainView : View() {
                         id = "b1"
                         text = "start"
                         alignment = Pos.TOP_RIGHT
-
-
                         StackPane.setAlignment(this, Pos.BOTTOM_LEFT)
                         StackPane.setMargin(this, Insets(0.0, 0.0, 50.0, 50.0))
+                        action {
+                            mController.isProcessing = true
+                            mController.executeValues()
+                        }
                     }
                     var b2 = button {
                         id = "b2"
@@ -151,7 +153,10 @@ class MainView : View() {
                         alignment = Pos.TOP_RIGHT
                         StackPane.setAlignment(this, Pos.TOP_RIGHT)
                         StackPane.setMargin(this, Insets(50.0, 50.0, 0.0, 0.0))
-
+                        action {
+                            mController.isProcessing = false
+                            mController.updateFiles()
+                        }
                     }
                 }
 
